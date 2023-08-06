@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+set -e
+
+DOTFILES_LOCATION=$(pwd)
+export DOTFILES_LOCATION;
+echo $DOTFILES_LOCATION
+
+###
+# Install all sub directories
+###
+./bin/dotfiles install aws
+./bin/dotfiles install git
+./bin/dotfiles install k9s
+./bin/dotfiles install omz
+./bin/dotfiles install zsh

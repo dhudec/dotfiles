@@ -1,0 +1,17 @@
+[alias]
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+[commit]
+	gpgsign = true
+[user]
+	signingkey = 5202E6F9D63FC21A
+	name = Drew Hudec
+	email = drew@basistheory.com
+[gpg]
+	program = gpg
+[pull]
+	rebase = true
+[fetch]
+	prune = true
+
+[includeIf "gitdir:~/src/github/dhudec/"]
+	path = ~/.gitconfig-dhudec
