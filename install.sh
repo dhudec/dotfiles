@@ -13,4 +13,5 @@ echo $DOTFILES_LOCATION
 ./bin/dotfiles install git
 ./bin/dotfiles install k9s
 ./bin/dotfiles install omz
+./bin/dotfiles install vim
 ./bin/dotfiles install zsh
