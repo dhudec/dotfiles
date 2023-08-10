@@ -12,6 +12,8 @@ alias src='cd $HOME/src/github'
 alias zsh-edit='code $HOME/.zshrc'
 alias zsh-source='source $HOME/.zshrc'
 
-# k9s
+# kubernetes
+alias kubectl-use-dev-us-east-2='kubectl config use-context arn:aws:eks:us-east-2:914054469264:cluster/basistheory-dev'
+alias kubectl-use-dev-us-west-2='kubectl config use-context arn:aws:eks:us-west-2:914054469264:cluster/basistheory-dev'
 alias k9s-dev-us-east-2='k9s --context arn:aws:eks:us-east-2:914054469264:cluster/basistheory-dev'
 alias k9s-dev-us-west-2='k9s --context arn:aws:eks:us-west-2:914054469264:cluster/basistheory-dev'
