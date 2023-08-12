@@ -2,4 +2,4 @@
 
 set -e
 
-ln -sf "${DOTFILES_LOCATION}/k9s/solarized_dark.yml" "${HOME}/Library/Application Support/k9s/skin.yml"
+ln -sf "${DOTFILES_LOCATION}/k9s/one_dark.yml" "${HOME}/Library/Application Support/k9s/skin.yml"
