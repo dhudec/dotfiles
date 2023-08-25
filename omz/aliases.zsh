@@ -7,6 +7,7 @@ alias aws-eks-login-dev-us-west-2='aws eks update-kubeconfig --region us-west-2 
 alias uuid='uuidgen | tr "[:upper:]" "[:lower:]" | tr -d "\n" | pbcopy'
 alias ll='ls -al'
 alias src='cd $HOME/src/github'
+alias ip='dig +short myip.opendns.com @resolver1.opendns.com'
 
 # zsh
 alias zsh-edit='code $HOME/.zshrc'
