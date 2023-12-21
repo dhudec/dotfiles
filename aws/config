@@ -4,7 +4,7 @@ region = us-east-2
 [profile Development]
 sso_session = BasisTheory
 sso_account_id = 914054469264
-sso_role_name = PowerUserAccess
+sso_role_name = AWSAdministratorAccess
 region = us-east-2
 output = json
 
@@ -24,3 +24,8 @@ sso_registration_scopes = sso:account:access
 region = us-east-2
 [profile Dev]
 region = us-east-2
+
+[profile localstack]
+region=us-east-2
+output=json
+endpoint_url = http://localhost:4566
