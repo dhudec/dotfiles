@@ -10,6 +10,7 @@ echo $DOTFILES_LOCATION
 # Install all sub directories
 ###
 ./bin/dotfiles install aws
+./bin/dotfiles install claude
 ./bin/dotfiles install git
 ./bin/dotfiles install iterm2
 ./bin/dotfiles install k9s
