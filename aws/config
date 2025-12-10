@@ -1,31 +1,6 @@
-[default]
-region = us-east-2
-
-[profile Development]
-sso_session = BasisTheory
-sso_account_id = 914054469264
-sso_role_name = AWSAdministratorAccess
-region = us-east-2
-output = json
-
-[profile Production]
-sso_session = BasisTheory
-sso_account_id = 469828239459
-sso_role_name = AWSAdministratorAccess
-region = us-east-2
-output = json
-
-[sso-session BasisTheory]
-sso_start_url = https://d-9a67041def.awsapps.com/start#/
-sso_region = us-east-2
-sso_registration_scopes = sso:account:access
-
-[profile Acceptance]
-region = us-east-2
-[profile Dev]
-region = us-east-2
-
 [profile localstack]
 region = us-east-2
 output = json
 endpoint_url = http://localhost:4566
+[profile Acceptance]
+region = us-east-2

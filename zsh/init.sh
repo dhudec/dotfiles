@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export NPM_TOKEN=
+export GITHUB_TOKEN=
+export GITHUB_PULL_TOKEN=
+export ANTHROPIC_API_KEY=
+export LOCALSTACK_AUTH_TOKEN=

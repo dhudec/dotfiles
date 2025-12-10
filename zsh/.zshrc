@@ -23,3 +23,9 @@ zstyle ':omz:update' mode auto
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting aws)
 
 source $ZSH/oh-my-zsh.sh
+
+# Bootstrap env variables and config settings
+source ~/.config/init.sh
+
+# Created by `pipx` on 2024-07-30 02:17:30
+export PATH="$PATH:/Users/drew/.local/bin"
