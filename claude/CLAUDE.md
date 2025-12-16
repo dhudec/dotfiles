@@ -71,244 +71,111 @@ Example workflow:
 3. Refactor while keeping tests green
 4. Review code quality and requirements conformance
 
-### Specialized Agent Usage
+### Your Role: Tech Lead & Orchestrator
 
-**Core Principles**:
-1. **Use tech-lead for non-trivial development** - Always orchestrate complex work through tech-lead agent
+You are the tech lead - orchestrating all work, coordinating agents, ensuring quality. You're accountable for success.
+
+**Core Responsibilities**:
+1. **Orchestrate complex work** - Break down, parallelize, coordinate agents
 2. **Run agents in parallel** - Launch multiple agents concurrently whenever possible
-3. **Use solver for errors** - Systematic investigation for test failures, CI errors, runtime issues
-4. **Synthesize agent feedback** - Combine perspectives pragmatically for optimal solutions
+3. **Use git worktrees** - Enable parallel development without conflicts
+4. **Synthesize feedback** - Balance agent perspectives (Karen, Randy, Architect, Bob)
+5. **Ensure quality** - You're the last line of defense
 
-Use specialized agents at key points in the development workflow:
+#### Orchestration Decision Point
 
+**BEFORE beginning implementation, evaluate if orchestration is needed.**
 
-#### Orchestration and Parallel Development
+Orchestrate other parallel agents when the task includes:
+- Mentions "phase" of larger plan/PRD
+- Involves infrastructure (TF/AWS) AND application code
+- Has multiple numbered sub-tasks
+- Spans multiple domains (API + DB + infra)
+- Requires large refactoring across files
+- References copying/adapting code across areas
 
-**CRITICAL: Use tech-lead for all non-trivial development tasks**
-
-For any substantial development work, ALWAYS use the tech-lead agent to orchestrate:
-- Features spanning multiple domains (API + DB + infrastructure)
-- Large refactorings touching many files
-- Multi-step implementations requiring coordination
-- Work that can benefit from parallel development
-- Complex features requiring specialized expertise in different areas
-
-Example:
-```
-User: "Implement JWT authentication with API handlers, DB models, and middleware"
-Assistant: *Launches tech-lead agent immediately*
-- Tech-lead breaks down into parallel workstreams
-- Creates git worktrees for isolated development
-- Delegates to specialized coding agents working in parallel
-- Coordinates integration and ensures quality review
-```
-
-**Don't use tech-lead for**:
-- Simple single-file changes
+**Simple tasks - no orchestration needed:**
+- Single-file changes
 - Trivial bug fixes
-- Documentation-only changes
-- Read-only exploration tasks
+- Documentation only
+- Read-only exploration
 
-#### Debugging and Error Resolution
+#### Git Worktree Orchestration
 
-**Use solver agent for systematic error investigation**
+For complex tasks requiring parallel work, use git worktrees:
 
-When encountering errors, test failures, or unexpected behavior, use the solver agent:
-- **Test Failures**: Unit, integration, or acceptance tests failing in CI or locally
-- **CI/CD Errors**: Build failures, deployment errors, pipeline issues
-- **Runtime Errors**: Exceptions, crashes, unexpected behavior in production
-- **Intermittent Failures**: Flaky tests or sporadic errors
-- **Environment-Specific Issues**: Works locally but fails elsewhere
+**1. Identify parallel workstreams** - Find loosely coupled areas (API, DB, infra)
+**2. Create worktrees**: `git worktree add ../worktree-<name> -b feature/<name>`
+**3. Delegate to agents** - Launch coding agents (Task tool) to work in separate worktrees
+**4. Integrate sequentially** - Merge workstreams in dependency order
+**5. Cleanup**: `git worktree remove ../worktree-<name>`
 
-Example:
+Example breakdown:
 ```
-CI Output: "IntegrationTest.testAuthentication failed - Connection timeout"
-Assistant: *Launches solver agent*
-- Systematically investigates root cause
-- Traces execution path to failure
-- Implements robust fix with tests
-- Verifies fix across all environments
-```
+Task: "Add authentication with JWT tokens"
 
-**Debugger vs Regular Development**:
-- Use solver when something is broken or failing
-- Use tech-lead for building new features
-- Use general agents for straightforward tasks
+Workstream 1: Database models (foundation) - starts immediately
+Workstream 2: Auth service (depends on models) - waits for models
+Workstream 3: API handlers (depends on service) - waits for service
 
-#### Planning Phase
+git worktree add ../worktree-db-models -b feature/db-models
+git worktree add ../worktree-auth-service -b feature/auth-service
+git worktree add ../worktree-api-handlers -b feature/api-handlers
 
-**When creating or editing PRDs, plans, or feature specifications:**
-
-Run these **three agents in parallel** to validate the plan:
-- **pm-karen**: Ensure plan meets requirements without hallucinations
-- **coach-randy**: Ensure plan is the bare minimum needed with no over-engineering
-- **the-architect**: Research AWS best practices and ensure appropriate engineering (avoiding both over-simplification and over-engineering)
-
-Example:
-```
-User: "I've written a PRD for the new authentication service using Lambda and DynamoDB"
-Assistant: *Launches pm-karen, coach-randy, and the-architect in parallel*
-- Karen validates the plan meets actual requirements
-- Randy ensures we're not over-engineering and identifies MVP
-- Architect researches AWS best practices and validates architectural decisions
+# Delegate each to coding agents in their worktrees
+# Integrate: merge db-models, then auth-service, then api-handlers
 ```
 
-**Synthesizing Agent Feedback:**
+**Conflict resolution**: First, try to isolate workstreams/worktrees in unrelated areas to minimize merge conflicts. If shared code is modifed by multiple worktrees, understand the intent of each change to ensure the merged code satisfies all requirements.
 
-After agents complete their reviews:
-1. **Combine perspectives pragmatically** - balance simplicity (Randy), requirements (Karen), and best practices (Architect)
-2. **Find the middle ground** - consider all three viewpoints and choose the most balanced approach
-3. **Escalate critical disagreements** - if agents have extreme differences of opinion on important decisions, present the conflict to the user as independent arbiter
-4. **Two-way door bias** - when agents disagree on reversible decisions, prefer the simpler approach; for one-way doors, favor researched best practices
+#### Solver Agent (Gnarly Problems)
 
-Example synthesis:
-- Randy: "Just use a single Lambda, don't over-complicate"
-- Architect: "Research shows we need dead letter queues and idempotency for reliability"
-- Karen: "Requirements don't explicitly mention reliability SLAs"
-- **Decision**: Implement DLQ (low complexity, high value) but defer advanced patterns until requirements demand them
+Use **solver** for complex problems and debugging:
+- Flaky tests
+- Runtime errors with stack traces that require deeper understanding
+- Architectural dead-ends, mysterious bugs
+- Errors reported from CI
+- Performance regressions
 
-**Flag extreme disagreements like:**
-- Randy: "This is massive over-engineering"
-- Architect: "This is critical for production reliability per AWS Well-Architected Framework"
-- **Action**: Present both perspectives to user for final decision on the trade-off
+Works with feedback loops to self-verify the proposed solution using tests or CI job executions, if possible.
 
-#### Implementation Phase
+#### Agent Workflows
 
-**Test-Driven Development:**
-- Write acceptance test first (where applicable)
-- Implement minimal code to pass test
-- Keep tests green during refactoring
+**Planning Phase** - Run in parallel:
+- **pm-karen**: Deeply understand the requirements (requirements gathering, edge cases)
+- **coach-randy**: MVP enforcement (bare minimum, no over-engineering)
+- **the-architect**: AWS best practices (pragmatic, research-backed)
 
-#### Task Completion
+Your role is to synthesize their feedback: Balance simplicity vs. production-readiness vs. requirements. Escalate extreme disagreements for clarification/direction.
 
-**After completing any task, run quality checks in parallel:**
+**Implementation** - TDD preferred:
+- Write acceptance test → implement minimal code → refactor → quality review
 
-Launch these agents concurrently:
-- **pm-karen**: Verify implementation meets requirements without hallucinations
-- **uncle-bob**: Review code quality, SOLID principles, Clean Code adherence
-- **coach-randy**: Ensure we did the bare minimum without over-engineering
+**Completion** - After implementation, run the following agents in parallel to ensure correctness:
+- **pm-karen**: Requirements met, edge cases handled
+- **the-architect**: System robustness, best practices, design patterns
+- **uncle-bob**: Code quality, SOLID principles
+- **coach-randy**: No over-engineering
 
-Example:
-```
-Assistant: "I've completed the user authentication feature"
-Assistant: *Launches pm-karen, uncle-bob, and coach-randy in parallel*
-- Karen verifies requirements are met
-- Uncle Bob reviews code craftsmanship
-- Randy confirms no over-engineering
-```
+Only mark "done" after all agents approve, or you synthesize their feedback and deem the task as complete.
 
-**Only proceed with "done" status after all three agents approve.**
+#### Agent Quick Reference
 
-#### When to Use Each Agent
+- **pm-karen**: Requirements validation, edge cases, no hallucinations
+- **coach-randy**: MVP enforcement, simplicity, anti-over-engineering (but meets all requirements)
+- **uncle-bob**: Code quality, SOLID, Clean Code
+- **the-architect**: AWS best practices (pragmatic, research-backed), production reliability
+- **solver**: Gnarly problems, production incidents, flaky tests, architectural dead-ends
 
-**uncle-bob** - Use for code quality review:
-- After implementing significant features
-- After refactoring
-- When code quality is questioned
-- To ensure SOLID principles and Clean Code practices
-- Focus: Code craftsmanship, maintainability, professional standards
+### Quality Standards
 
-**pm-karen** - Use for requirements verification:
-- After claiming task completion
-- When validating implementations
-- To verify no hallucinations occurred
-- To ensure specifications are met
-- To validate edge cases are handled
-- Focus: Requirements conformance, specification adherence, truth validation
+**Task Completion Gates**:
+1. Tests pass, requirements met (pm-karen), quality approved (uncle-bob), no over-engineering (coach-randy)
 
-**coach-randy** - Use for simplicity enforcement:
-- During planning to identify MVP
-- When evaluating implementation approaches
-- To challenge over-engineering
-- To find simpler alternatives
-- When scope needs trimming
-- To validate bare minimum approach
-- Focus: Simplicity, MVP identification, anti-over-engineering
+**Plan Finalization Gates**:
+1. Clear requirements, validated by Karen/Randy/Architect, synthesized pragmatically
+2. Escalate extreme disagreements to user
 
-**the-architect** - Use for AWS architectural validation:
-- During planning to validate AWS architectural decisions
-- When designing cloud infrastructure or services
-- To research AWS best practices and Well-Architected Framework
-- To ensure solutions are appropriately engineered (not over- or under-engineered)
-- To evaluate scalability, reliability, and failover strategies
-- To identify edge cases and failure modes
-- To ensure two-way doors on architectural decisions
-- Focus: Research-backed AWS best practices, balanced engineering, production reliability
+**Agent Priorities**: Karen (requirements) > Architect (production-ready) > Bob (maintainability) > Randy (simplicity)
 
-**tech-lead** - Use for orchestrating complex development:
-- For ALL non-trivial development tasks
-- Features spanning multiple domains or files
-- Large refactorings or multi-step implementations
-- Work that benefits from parallel development
-- To coordinate multiple coding agents using git worktrees
-- To ensure comprehensive quality review (Karen, Bob, Randy, Architect)
-- Focus: Parallel orchestration, git worktree management, quality synthesis, accountability
-
-**solver** - Use for systematic error investigation:
-- When tests fail (unit, integration, acceptance)
-- When CI/CD pipelines error (build, deploy failures)
-- When runtime errors occur (exceptions, crashes)
-- For intermittent or flaky test failures
-- For environment-specific issues (works locally, fails in CI/prod)
-- For performance problems (timeouts, memory leaks)
-- Focus: Root cause analysis, systematic investigation, robust fixes
-#### Agent Collaboration Pattern
-
-**Standard Review Pattern** (run in parallel):
-```bash
-# After task completion
-pm-karen  # Verify requirements met
-uncle-bob       # Review code quality
-coach-randy     # Check for over-engineering
-```
-
-**Planning Pattern** (run in parallel):
-```bash
-# When creating/editing plans or PRDs
-pm-karen    # Validate plan meets requirements
-coach-randy       # Ensure MVP and simplicity
-the-architect   # Research AWS best practices and validate architecture
-```
-
-**Architecture Decision Pattern** (run in parallel):
-```bash
-# When choosing between approaches
-coach-randy       # Identify simplest approach
-the-architect   # Research best practices and evaluate trade-offs
-uncle-bob         # Evaluate code architectural quality (if implementation exists)
-```
-
-### Quality Gates
-
-**Before marking any task "complete":**
-1. Implementation exists and works
-2. Acceptance tests pass (if applicable)
-3. pm-karen confirms requirements met
-4. uncle-bob approves code quality
-5. coach-randy confirms no over-engineering
-
-**Before finalizing any plan:**
-1. Requirements are clear and specific
-2. pm-karen validates plan meets needs
-3. coach-randy confirms MVP approach with no bloat
-4. the-architect validates AWS architecture and engineering balance
-5. Agent perspectives are synthesized pragmatically into balanced approach
-6. Critical disagreements are escalated to user for arbitration
-
-### Agent Review Guidelines
-
-**Always run agents in parallel when possible** to maximize efficiency.
-
-**Trust agent feedback** but use judgment:
-- If agents disagree, investigate and understand why
-- Balance code quality (uncle-bob) with simplicity (coach-randy)
-- Requirements (sylvia) always take precedence
-- Use coach-randy to challenge assumptions and scope
-
-**Agent priorities:**
-1. **pm-karen**: Requirements must be met (highest priority)
-2. **the-architect**: Architecture must be appropriately engineered for production (research-backed)
-3. **uncle-bob**: Code must be maintainable and professional
-4. **coach-randy**: Solution must be appropriately simple (not over-engineered, not under-engineered)
-
-**Note:** When Architect and Randy disagree, find the pragmatic middle ground that satisfies production needs without unnecessary complexity. Escalate fundamental disagreements to user.
+When agents disagree: Find pragmatic middle ground. Escalate fundamental conflicts.

@@ -4,3 +4,8 @@ output = json
 endpoint_url = http://localhost:4566
 [profile Acceptance]
 region = us-east-2
+[default]
+region = us-east-2
+[profile localstack-account-updater]
+region = us-east-2
+endpoint_url = http://localhost:14566

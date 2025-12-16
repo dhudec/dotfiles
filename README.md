@@ -12,11 +12,25 @@ Configuration is code. Rather than manually editing files scattered throughout `
 
 ## Quick Start
 
+### Fresh macOS Setup
+
 ```sh
+# 1. Install Homebrew (if not already installed)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# 2. Clone dotfiles
 git clone https://github.com/dhudec/dotfiles.git ~/src/github/dhudec/dotfiles
 cd ~/src/github/dhudec/dotfiles
+
+# 3. Install everything (Homebrew packages + dotfiles)
 ./install.sh
 ```
+
+The `install.sh` script will:
+1. Install all Homebrew packages from the Brewfile (dev tools, apps, CLIs)
+2. Configure shell (zsh, oh-my-zsh, powerlevel10k)
+3. Set up development tools (git, aws, k9s, etc.)
+4. Link Claude Code configuration
 
 ## What Gets Configured
 
@@ -43,6 +57,10 @@ cd ~/src/github/dhudec/dotfiles
 dotfiles/
 ├── install.sh              # Main installer - runs all modules
 ├── bin/dotfiles            # CLI for individual module installation
+├── Brewfile                # Homebrew package definitions for all tools
+│
+├── brew/                   # Homebrew bootstrap
+│   └── install.sh          # Installs all packages from Brewfile
 │
 ├── aws/                    # AWS CLI config and credentials templates
 │   ├── config              # AWS profiles and SSO configuration
@@ -111,6 +129,7 @@ Install specific modules individually:
 ```
 
 Available modules:
+- `brew` - Install Homebrew packages from Brewfile
 - `aws` - AWS CLI configuration
 - `claude` - Claude Code settings and agents
 - `git` - Git configuration
@@ -182,6 +201,28 @@ cp ~/Library/Preferences/com.googlecode.iterm2.plist iterm2/
 
 #### Modifying Claude Code Settings
 Edit [claude/settings.json](claude/settings.json) for global preferences (model, MCP servers), or [claude/CLAUDE.md](claude/CLAUDE.md) for global context/instructions. Changes to agents should be made in [claude/agents/](claude/agents/).
+
+#### Managing Homebrew Packages
+The [Brewfile](Brewfile) defines all Homebrew packages, casks, and taps.
+
+**Add a new package:**
+1. Install it: `brew install <package>`
+2. Add to Brewfile: `brew "<package>"`
+3. Commit the change
+
+**Add a new app:**
+1. Install it: `brew install --cask <app>`
+2. Add to Brewfile: `cask "<app>"`
+3. Commit the change
+
+**Keep Brewfile in sync:**
+```sh
+# Dump current installed packages (overwrites Brewfile)
+brew bundle dump --force
+
+# Or manually edit Brewfile and install
+brew bundle install
+```
 
 ## Prerequisites
 
