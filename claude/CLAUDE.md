@@ -29,6 +29,20 @@ Trunk-based development with `master` as the main branch.
 - `feat/<description>` - Feature without ticket
 - `fix/<description>` - Bug fix without ticket
 
+## Linear Ticket Management
+
+**Defaults:**
+- **Team**: ENG (Engineering)
+- **Template**: Task
+- **Assignee**: None (unassigned)
+
+**Standalone tickets** (not in a project):
+- State: **Triage**
+
+**Project tickets**:
+- Organize by **milestone**
+- State: **Later** (by default)
+
 ## Runtime Version Management
 
 Use `.tool-versions` in each repo to pin asdf-managed runtimes. Example:
